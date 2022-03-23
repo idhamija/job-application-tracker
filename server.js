@@ -3,7 +3,8 @@ import express from "express";
 import "express-async-errors";
 import mongoSanitize from "express-mongo-sanitize";
 import helmet from "helmet";
-import { join } from "path";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 import xss from "xss-clean";
 import connectDB from "./db/connect.js";
 import authenticateUser from "./middleware/authentication.js";
@@ -22,6 +23,8 @@ app.use(xss());
 app.use(mongoSanitize());
 
 if (process.env.NODE_ENV === "production") {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
   app.use(express.static(join(__dirname, "client", "build")));
 
   app.use("/api/v1/auth", authRouter);
